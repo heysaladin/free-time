@@ -9,9 +9,13 @@ export default class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.signOut = this.signOut.bind(this);
+        // this.state = {
+        //     selectedOption: "option1"
+        // }
         this.state = {
-            selectedOption: "option1"
-        };
+            selectedOption: "option1",
+            isActive: true
+        }
     }
 
     signOut(event) {
@@ -31,6 +35,11 @@ export default class Dashboard extends Component {
         formSubmitEvent.preventDefault();
 
         console.log("You have submitted:", this.state.selectedOption);
+
+        this.setState({
+            isActive: true
+        });
+
     };
 
     render() {
@@ -159,13 +168,14 @@ export default class Dashboard extends Component {
                                             <span style={{ fontWeight: 'normal', textAlign: 'left', fontSize: '0.95em', marginTop: -3, display: 'block' }}>Developer Team Manager</span>
                                         </div></Td>
                                     <Td style={styleTdWhiteLeft} >
-                                        <form onSubmit={this.handleFormSubmit} style={{ display: 'flex' }}>
+                                        <form onSubmit={this.handleFormSubmit} style={{ display: 'flex', justifyContent: 'center' }}>
 
                                             <div className="form-check" style={this.state.selectedOption === "option1" ? formCheckBussy : formCheck}>
                                                 <label
                                                     style={this.state.selectedOption === "option1" ? whiteText : blackText}
                                                 >
                                                     <input
+                                                        disabled={this.state.isActive}
                                                         type="radio"
                                                         name="react-tips"
                                                         value="option1"
@@ -183,6 +193,7 @@ export default class Dashboard extends Component {
                                                     style={this.state.selectedOption === "option2" ? whiteText : blackText}
                                                 >
                                                     <input
+                                                        disabled={this.state.isActive}
                                                         type="radio"
                                                         name="react-tips"
                                                         value="option2"
@@ -200,6 +211,7 @@ export default class Dashboard extends Component {
                                                     style={this.state.selectedOption === "option3" ? whiteText : blackText}
                                                 >
                                                     <input
+                                                        disabled={this.state.isActive}
                                                         type="radio"
                                                         name="react-tips"
                                                         value="option3"
@@ -213,14 +225,19 @@ export default class Dashboard extends Component {
                                             </div>
 
                                             <div className="form-group">
-                                                <button className="btn btn-primary" type="submit" style={{
-                                                    marginTop: 16,
-                                                    borderRadius: '50%',
-                                                    padding: '2px 8px 6px 8px',
-                                                    marginLeft: 10,
-                                                    backgroundImage: 'linear-gradient(45deg, #FF0488, #FD9D4A)',
-                                                    border: '#eeeeee'
-                                                }}>
+                                                <button className="btn btn-primary" type="submit" style={
+                                                    this.state.isActive ?
+                                                        { display: 'none' } :
+                                                        {
+                                                            display: 'block',
+                                                            marginTop: 16,
+                                                            borderRadius: '50%',
+                                                            padding: '2px 8px 6px 8px',
+                                                            marginLeft: 10,
+                                                            backgroundImage: 'linear-gradient(45deg, #FF0488, #FD9D4A)',
+                                                            border: '#eeeeee'
+                                                        }
+                                                }>
                                                     {/* <svg style={{ width: 15, height: 15 }} xmlns="http://www.w3.org/2000/svg" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 477.873 477.873" ><g><g>
                                                         <g>
                                                             <path d="M392.533,238.937c-9.426,0-17.067,7.641-17.067,17.067V426.67c0,9.426-7.641,17.067-17.067,17.067H51.2    c-9.426,0-17.067-7.641-17.067-17.067V85.337c0-9.426,7.641-17.067,17.067-17.067H256c9.426,0,17.067-7.641,17.067-17.067    S265.426,34.137,256,34.137H51.2C22.923,34.137,0,57.06,0,85.337V426.67c0,28.277,22.923,51.2,51.2,51.2h307.2    c28.277,0,51.2-22.923,51.2-51.2V256.003C409.6,246.578,401.959,238.937,392.533,238.937z" data-original="#000000" className="active-path" data-old_color="#000000" fill="#FFFFFF" />
@@ -236,17 +253,18 @@ export default class Dashboard extends Component {
 
                                         </form>
                                     </Td>
-                                    <Td>
+                                    <Td style={{ position: 'relative' }}>
                                         <span style={borderWhite}>Sedang sibuk mengatur instance karmagroup dev. di GCP</span>
-                                        <div style={{ position: 'absolute', marginTop: '-3.65%', right: '5%' }}>
+                                        <div style={{ position: 'absolute', marginTop: -53, right: -60 }}>
                                             <BootstrapSwitchButton
-                                                checked={false}
-                                                onlabel='Admin User'
+                                                checked={this.state.isActive}
+                                                onlabel='Off'
                                                 onstyle='danger'
-                                                offlabel='Regular User'
+                                                offlabel='On'
                                                 offstyle='success'
-                                                onChange={(checked: boolean) => {
-                                                    this.setState({ isUserAdmin: checked })
+                                                onChange={(checked) => {
+                                                    this.setState({ isActive: checked })
+                                                    console.log(this.state.isActive)
                                                 }}
                                             />
                                         </div>
