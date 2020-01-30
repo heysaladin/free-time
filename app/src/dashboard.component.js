@@ -4,6 +4,7 @@ import Cookies from 'universal-cookie';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
+import firebase from 'firebase'
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -14,9 +15,63 @@ export default class Dashboard extends Component {
         // }
         this.state = {
             selectedOption: "option1",
-            isActive: true
+            selectedOptionFinal: "option1",
+            isActive: true,
+            dataUsers: []
         }
+        const config = {
+            apiKey: "AIzaSyBo55xw5ulgxA9RLOnxr45prd7KoIjEh0o",
+            authDomain: "saladin-projects.firebaseapp.com",
+            databaseURL: "https://saladin-projects.firebaseio.com",
+            projectId: "saladin-projects",
+            storageBucket: "saladin-projects.appspot.com",
+            messagingSenderId: "sender-id",
+            appID: "saladin-projects"
+        };
+        firebase.initializeApp(config);
+
+        this.getData();
+
     }
+
+    getData() {
+
+        // let dataUsers = [];
+
+        // const tblUsers = document.getElementById('tbl_users_list');
+        const databaseRef = firebase.database().ref('users/');
+        let rowIndex = 1;
+
+        // console.log(dataUsers)
+
+        databaseRef.once('value', function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+
+                //    var row = tblUsers.insertRow(rowIndex);
+                //    var cellId = row.insertCell(0);
+                //    var cellName = row.insertCell(1);
+                //    cellId.appendChild(document.createTextNode(childKey));
+                //    cellName.appendChild(document.createTextNode(childData.user_name));
+
+                // console.log(document.createTextNode(JSON.stringify(childData)));
+
+                let dataUser = { "user_id": document.createTextNode(childData.user_id), "user_name": document.createTextNode(childData.user_name) }
+
+                let dataAdd = this.state.dataUsers.concat(dataUser)
+
+                this.setState({ dataUsers: dataAdd });
+
+                console.log(this.state.dataUsers)
+
+                rowIndex = rowIndex + 1;
+            });
+        });
+
+    }
+
+
 
     signOut(event) {
         event.preventDefault();
@@ -36,9 +91,22 @@ export default class Dashboard extends Component {
 
         console.log("You have submitted:", this.state.selectedOption);
 
+        var data = {
+            user_id: '-LzoaqB-bYrw9K-x8TTl',
+            user_name: this.state.selectedOption
+        }
+
+        var updates = {};
+        updates['/users/' + '-LzoaqB-bYrw9K-x8TTl'] = data;
+        firebase.database().ref().update(updates);
+
         this.setState({
-            isActive: true
+            isActive: true,
+            selectedOptionFinal: this.state.selectedOption
         });
+
+        this.getData();
+
 
     };
 
@@ -151,7 +219,7 @@ export default class Dashboard extends Component {
                 <div className="App">
                     <div style={{ paddingTop: 75, width: '100%', height: '100vh', background: '#F5F4F3' }}>
                         {/* <h3>Build Sign Up & Login UI Template in React</h3> */}
-                        <Table style={{ margin: '40px auto', maxWidth: 1080 }}>
+                        <Table style={{ margin: '40px auto', maxWidth: 1080 }} id="tbl_users_list">
                             <Thead>
                                 <Tr>
                                     <Th><span style={{ marginBottom: 25, display: 'block' }}>Team Member</span></Th>
@@ -182,7 +250,9 @@ export default class Dashboard extends Component {
                                                         checked={this.state.selectedOption === "option1"}
                                                         onChange={this.handleOptionChange}
                                                         className="form-check-input"
-                                                        style={{ marginTop: 0 }}
+                                                        style={this.state.isActive ?
+                                                            { marginTop: 0, display: 'none' } :
+                                                            { marginTop: 0, display: 'block' }}
                                                     />
                                                     BUSSY
     </label>
@@ -200,7 +270,9 @@ export default class Dashboard extends Component {
                                                         checked={this.state.selectedOption === "option2"}
                                                         onChange={this.handleOptionChange}
                                                         className="form-check-input"
-                                                        style={{ marginTop: 0 }}
+                                                        style={this.state.isActive ?
+                                                            { marginTop: 0, display: 'none' } :
+                                                            { marginTop: 0, display: 'block' }}
                                                     />
                                                     FREE
     </label>
@@ -218,7 +290,9 @@ export default class Dashboard extends Component {
                                                         checked={this.state.selectedOption === "option3"}
                                                         onChange={this.handleOptionChange}
                                                         className="form-check-input"
-                                                        style={{ marginTop: 0 }}
+                                                        style={this.state.isActive ?
+                                                            { marginTop: 0, display: 'none' } :
+                                                            { marginTop: 0, display: 'block' }}
                                                     />
                                                     LEARN
     </label>
@@ -263,7 +337,7 @@ export default class Dashboard extends Component {
                                                 offlabel='On'
                                                 offstyle='success'
                                                 onChange={(checked) => {
-                                                    this.setState({ isActive: checked })
+                                                    this.setState({ isActive: checked, selectedOption: this.state.selectedOptionFinal })
                                                     console.log(this.state.isActive)
                                                 }}
                                             />
@@ -290,6 +364,13 @@ export default class Dashboard extends Component {
                                     <Td>Bussy</Td>
                                     <Td>Oprek GCP</Td>
                                 </Tr>
+                                {this.state.dataUsers.map((item) => {
+                                    return <Tr key={item.user_id} name={item.user_name} >
+                                        <Td>{item.user_name}</Td>
+                                        <Td>Bussy</Td>
+                                        <Td>Oprek GCP</Td>
+                                    </Tr>
+                                })}
                             </Tbody>
                         </Table>
                     </div>
