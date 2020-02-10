@@ -44,30 +44,30 @@ export default class Dashboard extends Component {
 
         // console.log(dataUsers)
 
-        databaseRef.once('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                var childKey = childSnapshot.key;
-                var childData = childSnapshot.val();
+        // databaseRef.once('value', function (snapshot) {
+        //     snapshot.forEach(function (childSnapshot) {
+        //         var childKey = childSnapshot.key;
+        //         var childData = childSnapshot.val();
 
-                //    var row = tblUsers.insertRow(rowIndex);
-                //    var cellId = row.insertCell(0);
-                //    var cellName = row.insertCell(1);
-                //    cellId.appendChild(document.createTextNode(childKey));
-                //    cellName.appendChild(document.createTextNode(childData.user_name));
+        //         //    var row = tblUsers.insertRow(rowIndex);
+        //         //    var cellId = row.insertCell(0);
+        //         //    var cellName = row.insertCell(1);
+        //         //    cellId.appendChild(document.createTextNode(childKey));
+        //         //    cellName.appendChild(document.createTextNode(childData.user_name));
 
-                // console.log(document.createTextNode(JSON.stringify(childData)));
+        //         // console.log(document.createTextNode(JSON.stringify(childData)));
 
-                let dataUser = { "user_id": document.createTextNode(childData.user_id), "user_name": document.createTextNode(childData.user_name) }
+        //         let dataUser = { "user_id": document.createTextNode(childData.user_id), "user_name": document.createTextNode(childData.user_name) }
 
-                let dataAdd = this.state.dataUsers.concat(dataUser)
+        //         let dataAdd = this.state.dataUsers.concat(dataUser)
 
-                this.setState({ dataUsers: dataAdd });
+        //         this.setState({ dataUsers: dataAdd });
 
-                console.log(this.state.dataUsers)
+        //         console.log(this.state.dataUsers)
 
-                rowIndex = rowIndex + 1;
-            });
-        });
+        //         rowIndex = rowIndex + 1;
+        //     });
+        // });
 
     }
 
@@ -105,7 +105,7 @@ export default class Dashboard extends Component {
             selectedOptionFinal: this.state.selectedOption
         });
 
-        this.getData();
+        // this.getData();
 
 
     };
