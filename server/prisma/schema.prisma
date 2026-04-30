@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model persons {
+  id                     String
+  name                   String
+  nickname               String?
+  honorific              String?
+  gender                 String?
+  birth_date             DateTime? @db.Date
+  is_dead                Boolean   @default(false)
+  death_date             DateTime? @db.Date
+  photo_url              String?
+  additional_information String?
+  created_at             DateTime  @default(now())
+  updated_at             DateTime
+  order_index            Int?      @default(0)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model relationships {
+  id                String
+  person1_id        String
+  person2_id        String
+  relationship_type RelationshipType
+  created_at        DateTime         @default(now())
+  updated_at        DateTime
+
+  @@ignore
+}
+
+enum RelationshipType {
+  PARENT_CHILD
+  SPOUSE
+  SIBLING
+}
+
+model Board {
+  id        String   @id @default(cuid())
+  name      String   @default("Default Board")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     Note[]
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  content   String   @default("")
+  x         Float
+  y         Float
+  color     String   @default("yellow")
+  boardId   String
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
