@@ -20,9 +20,9 @@ model persons {
   death_date             DateTime? @db.Date
   photo_url              String?
   additional_information String?
+  order_index            Int?      @default(0)
   created_at             DateTime  @default(now())
   updated_at             DateTime
-  order_index            Int?      @default(0)
 
   @@ignore
 }
@@ -39,12 +39,6 @@ model relationships {
   @@ignore
 }
 
-enum RelationshipType {
-  PARENT_CHILD
-  SPOUSE
-  SIBLING
-}
-
 model Board {
   id        String   @id @default(cuid())
   name      String   @default("Default Board")
@@ -54,13 +48,20 @@ model Board {
 }
 
 model Note {
-  id        String   @id @default(cuid())
-  content   String   @default("")
-  x         Float
-  y         Float
-  color     String   @default("yellow")
-  boardId   String
-  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  content     String   @default("")
+  x           Float
+  y           Float
+  color       String   @default("yellow")
+  boardId     String
+  workingOnBy String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  board       Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+}
+
+enum RelationshipType {
+  PARENT_CHILD
+  SPOUSE
+  SIBLING
 }

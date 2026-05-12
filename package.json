@@ -1,0 +1,11 @@
+{
+  "name": "colab",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix server dev & npm --prefix app start",
+    "start": "npm --prefix app start",
+    "server": "npm --prefix server dev",
+    "build": "npm --prefix app build"
+  }
+}
