@@ -52,12 +52,14 @@ app.post('/api/boards/:boardId/notes', async (req, res) => {
 // PATCH /api/notes/:id
 app.patch('/api/notes/:id', async (req, res) => {
   try {
-    const { content, x, y, color } = req.body;
+    const { content, x, y, color, done, workingOnBy } = req.body;
     const data = {};
     if (content !== undefined) data.content = content;
     if (x !== undefined) data.x = x;
     if (y !== undefined) data.y = y;
     if (color !== undefined) data.color = color;
+    if (done !== undefined) data.done = done;
+    if (workingOnBy !== undefined) data.workingOnBy = workingOnBy;
 
     const note = await prisma.note.update({
       where: { id: req.params.id },
