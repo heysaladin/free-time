@@ -8,6 +8,63 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 
+    /* ── Board picker ───────────────────────────────────────────────────────── */
+    #board-picker-screen {
+      position: fixed; inset: 0; z-index: 400;
+      background: #f1f5f9;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 36px;
+    }
+    #board-picker-screen.hidden { display: none; }
+    .board-picker-title {
+      font-size: 13px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: #94a3b8;
+    }
+    .board-picker-cards {
+      display: flex; gap: 20px;
+    }
+    .board-card {
+      width: 180px; height: 120px;
+      border: 1.5px solid #e2e8f0; border-radius: 12px;
+      background: #fff; cursor: pointer;
+      font-size: 16px; font-weight: 700; color: #1e293b;
+      font-family: inherit;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .board-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    #board-pw-section {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    #board-pw-section.hidden { display: none; }
+    #board-pw-section .board-pw-label {
+      font-size: 12px; color: #64748b; font-weight: 600; letter-spacing: 1px;
+    }
+    #board-pw-section .board-pw-input {
+      padding: 8px 14px; border-radius: 8px; border: 1.5px solid #e2e8f0;
+      font-size: 14px; font-family: inherit; outline: none; width: 200px;
+      text-align: center; transition: border-color 0.15s;
+    }
+    #board-pw-section .board-pw-input:focus { border-color: #3b82f6; }
+    #board-pw-section .board-pw-input.error { border-color: #ef4444; }
+    #board-pw-section .board-pw-err { font-size: 11px; color: #ef4444; min-height: 14px; }
+    #board-pw-section .board-pw-btn {
+      padding: 8px 28px; border-radius: 8px; background: #3b82f6;
+      color: #fff; border: none; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    #board-pw-section .board-pw-btn:hover { background: #2563eb; }
+    .back-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 12px; color: #94a3b8; font-family: inherit;
+      padding: 6px 10px; border-radius: 6px; letter-spacing: 0.5px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .back-btn:hover { color: #475569; background: rgba(0,0,0,0.05); }
+
     /* ── Login screen ───────────────────────────────────────────────────────── */
     #login-screen {
       position: fixed; inset: 0; z-index: 300;
@@ -457,8 +514,24 @@
   <div class="warn-sub">This app requires a large screen to use.<br>Please open it on a desktop or laptop.</div>
 </div>
 
+<!-- ── Board picker ──────────────────────────────────────────────────────── -->
+<div id="board-picker-screen">
+  <div class="board-picker-title">Select Board</div>
+  <div class="board-picker-cards">
+    <button class="board-card" data-board="tamawal">Tamawal</button>
+    <button class="board-card" data-board="hyperfantasy">Hyperfantasy</button>
+  </div>
+  <div id="board-pw-section" class="hidden">
+    <div class="board-pw-label">Hyperfantasy — Enter Password</div>
+    <input class="board-pw-input" id="board-pw-input" type="password" placeholder="Password" />
+    <div class="board-pw-err" id="board-pw-err"></div>
+    <button class="board-pw-btn" id="board-pw-btn">Enter</button>
+    <button class="back-btn" id="board-pw-back">← Back</button>
+  </div>
+</div>
+
 <!-- ── Login screen ──────────────────────────────────────────────────────── -->
-<div id="login-screen">
+<div id="login-screen" class="hidden">
   <div class="login-title">Login as...</div>
   <div class="login-users">
 
@@ -488,6 +561,7 @@
     </div>
 
   </div>
+  <button class="back-btn" id="login-back-btn">← Back</button>
 </div>
 
 <!-- ── Loading / error overlay ───────────────────────────────────────────── -->
@@ -526,30 +600,30 @@
 
 <!-- ── Board canvas ──────────────────────────────────────────────────────── -->
 <div id="canvas">
-  <div class="quadrant" style="top:0;left:0;background:#f0fdf4;align-items:flex-start;justify-content:flex-start;">
-    <div><div class="q-label-id" style="color:#16a34a">Q2</div>
-    <div class="q-label-name" style="color:#16a34a">Plan</div>
-    <div class="q-label-desc" style="color:#16a34a">High Priority · Low Urgency</div></div>
-  </div>
-  <div class="quadrant" style="top:0;left:50%;background:#fff1f2;align-items:flex-start;justify-content:flex-end;">
+  <div class="quadrant" style="top:0;left:0;background:#fff1f2;align-items:flex-start;justify-content:flex-start;">
     <div><div class="q-label-id" style="color:#e11d48">Q1</div>
-    <div class="q-label-name" style="color:#e11d48">Do First</div>
-    <div class="q-label-desc" style="color:#e11d48">High Priority · High Urgency</div></div>
+    <div class="q-label-name" style="color:#e11d48">Do</div>
+    <div class="q-label-desc" style="color:#e11d48">Important · Urgent</div></div>
   </div>
-  <div class="quadrant" style="top:50%;left:0;background:#f8fafc;align-items:flex-end;justify-content:flex-start;">
-    <div><div class="q-label-id" style="color:#64748b">Q4</div>
-    <div class="q-label-name" style="color:#64748b">Eliminate</div>
-    <div class="q-label-desc" style="color:#64748b">Low Priority · Low Urgency</div></div>
+  <div class="quadrant" style="top:0;left:50%;background:#f0fdf4;align-items:flex-start;justify-content:flex-end;">
+    <div><div class="q-label-id" style="color:#16a34a">Q2</div>
+    <div class="q-label-name" style="color:#16a34a">Schedule</div>
+    <div class="q-label-desc" style="color:#16a34a">Important · Not Urgent</div></div>
   </div>
-  <div class="quadrant" style="top:50%;left:50%;background:#fefce8;align-items:flex-end;justify-content:flex-end;">
+  <div class="quadrant" style="top:50%;left:0;background:#fefce8;align-items:flex-end;justify-content:flex-start;">
     <div><div class="q-label-id" style="color:#ca8a04">Q3</div>
     <div class="q-label-name" style="color:#ca8a04">Delegate</div>
-    <div class="q-label-desc" style="color:#ca8a04">Low Priority · High Urgency</div></div>
+    <div class="q-label-desc" style="color:#ca8a04">Not Important · Urgent</div></div>
+  </div>
+  <div class="quadrant" style="top:50%;left:50%;background:#f8fafc;align-items:flex-end;justify-content:flex-end;">
+    <div><div class="q-label-id" style="color:#64748b">Q4</div>
+    <div class="q-label-name" style="color:#64748b">Eliminate</div>
+    <div class="q-label-desc" style="color:#64748b">Not Important · Not Urgent</div></div>
   </div>
   <div class="divider-h"></div>
   <div class="divider-v"></div>
-  <div id="axis-x">← Low · Urgency · High →</div>
-  <div id="axis-y">↓ Low · Priority · High ↑</div>
+  <div id="axis-x">← Urgent · Not Urgent →</div>
+  <div id="axis-y">↑ Important · Not Important ↓</div>
   <div id="title">Priority Matrix</div>
 </div>
 
@@ -571,8 +645,13 @@
 
   const SUPABASE_URL = 'https://vnqyzthjviyljhplvzay.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZucXl6dGhqdml5bGpocGx2emF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNTU4MzEsImV4cCI6MjA4OTkzMTgzMX0.hu9HWGs-I4P2EmlMGp-2fffWUfHx9n9SZj1bsQnE7Y8';
-  const BOARD_ID     = 'default';
+  let   BOARD_ID     = 'default';
   const TABLE        = 'Note';
+
+  const BOARDS = {
+    tamawal:      { id: 'default',      label: 'Tamawal',      requireLogin: true },
+    hyperfantasy: { id: 'hyperfantasy', label: 'Hyperfantasy', requireLogin: false, defaultUser: 'Sholahuddin' },
+  };
 
   const COLORS = {
     yellow: '#fef08a', pink: '#fda4af', blue: '#93c5fd',
@@ -583,6 +662,11 @@
     Sholahuddin: { initials: 'SH', color: '#3b82f6', photo: 'https://ca.slack-edge.com/TLE0MEZFE-U03JAM3DZL5-8978d46dbc43-512' },
     Sulaiman:    { initials: 'SL', color: '#8b5cf6', photo: 'https://ca.slack-edge.com/TLE0MEZFE-U087ZJUED5W-cea1bdbada74-512' },
     Guest:       { initials: 'GU', color: '#94a3b8', photo: null },
+    Eko:          { initials: 'EK', color: '#8b5cf6', photo: 'https://executive.co.id/cdn/shop/articles/Tampil_Beda_dengan_7_Model_Rambut_Panjang_Pria_yang_Maskulin_dan_Stylish_1200x.jpg?v=1747632454' },
+    Aidi:         { initials: 'AD', color: '#8b5cf6', photo: 'https://p2.piqsels.com/preview/588/820/979/adult-blur-business-close-up-thumbnail.jpg' },
+    Rofi:         { initials: 'RF', color: '#8b5cf6', photo: 'https://lozy.id/cdn/shop/products/hazelnut1_600x.jpg?v=1654586514' },
+    Anna:         { initials: 'AN', color: '#8b5cf6', photo: 'https://i.ytimg.com/vi/TOi2WNS19g0/hq720.jpg?sqp=-oaymwEYCJUDENAFSFryq4qpAwoIARUAAIhC0AEB&rs=AOn4CLBAa781urSCBTlGsSmw5PW9vwxAXQ' },
+    Dita:         { initials: 'DT', color: '#8b5cf6', photo: 'https://img.lazcdn.com/g/p/26c14daf2a5c4796531f50136b2a02d2.jpg_720x720q80.jpg' },
   };
 
   let workingOnEl = null;
@@ -698,13 +782,79 @@
     }
   });
 
-  const supabase    = createClient(SUPABASE_URL, SUPABASE_KEY);
-  const canvas      = document.getElementById('canvas');
-  const overlay     = document.getElementById('overlay');
-  const addBtn      = document.getElementById('add-btn');
-  const sessionBar  = document.getElementById('session-bar');
-  const sessionLabel= document.getElementById('session-name-label');
-  const loginScreen = document.getElementById('login-screen');
+  const supabase         = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const canvas           = document.getElementById('canvas');
+  const overlay          = document.getElementById('overlay');
+  const addBtn           = document.getElementById('add-btn');
+  const sessionBar       = document.getElementById('session-bar');
+  const sessionLabel     = document.getElementById('session-name-label');
+  const loginScreen      = document.getElementById('login-screen');
+  const boardPickerScreen= document.getElementById('board-picker-screen');
+
+  // ── Board picker ──────────────────────────────────────────────────────────
+
+  const boardCards    = document.querySelector('.board-picker-cards');
+  const boardPwSection= document.getElementById('board-pw-section');
+  const boardPwInput  = document.getElementById('board-pw-input');
+  const boardPwErr    = document.getElementById('board-pw-err');
+  const boardPwBtn    = document.getElementById('board-pw-btn');
+  const boardPwBack   = document.getElementById('board-pw-back');
+
+  function showBoardPicker() {
+    boardPickerScreen.classList.remove('hidden');
+    loginScreen.classList.add('hidden');
+    boardCards.style.display = '';
+    boardPwSection.classList.add('hidden');
+    boardPwInput.value = '';
+    boardPwErr.textContent = '';
+    boardPwInput.classList.remove('error');
+    document.querySelectorAll('.login-avatar').forEach(a => a.classList.remove('selected'));
+    document.querySelectorAll('.login-pw-wrap').forEach(w => w.classList.add('hidden'));
+  }
+
+  function selectBoard(key) {
+    const board = BOARDS[key];
+    BOARD_ID = board.id;
+    document.getElementById('title').textContent = board.label;
+
+    if (key === 'hyperfantasy') {
+      // Show password prompt inside board picker
+      boardCards.style.display = 'none';
+      boardPwSection.classList.remove('hidden');
+      boardPwInput.value = '';
+      boardPwErr.textContent = '';
+      boardPwInput.classList.remove('error');
+      boardPwInput.focus();
+
+      const attempt = () => {
+        if (boardPwInput.value === 'creative') {
+          localStorage.setItem('pm_board', key);
+          boardPickerScreen.classList.add('hidden');
+          startSession(board.defaultUser);
+        } else {
+          boardPwInput.classList.add('error');
+          boardPwErr.textContent = 'Wrong password';
+          boardPwInput.value = '';
+          boardPwInput.focus();
+        }
+      };
+      boardPwBtn.onclick = attempt;
+      boardPwInput.onkeydown = e => { if (e.key === 'Enter') attempt(); };
+      return;
+    }
+
+    localStorage.setItem('pm_board', key);
+    boardPickerScreen.classList.add('hidden');
+    loginScreen.classList.remove('hidden');
+  }
+
+  boardPwBack.addEventListener('click', showBoardPicker);
+
+  document.querySelectorAll('.board-card').forEach(card => {
+    card.addEventListener('click', () => selectBoard(card.dataset.board));
+  });
+
+  document.getElementById('login-back-btn').addEventListener('click', showBoardPicker);
 
   // ── Session ──────────────────────────────────────────────────────────────
 
@@ -716,6 +866,7 @@
     session = { name };
     localStorage.setItem('pm_session', JSON.stringify(session));
     loginScreen.classList.add('hidden');
+    boardPickerScreen.classList.add('hidden');
     sessionLabel.textContent = name;
     sessionBar.classList.remove('hidden');
     document.getElementById('done-folder-wrap').classList.remove('hidden');
@@ -726,6 +877,7 @@
 
   document.getElementById('logout-btn').addEventListener('click', () => {
     localStorage.removeItem('pm_session');
+    localStorage.removeItem('pm_board');
     location.reload();
   });
 
@@ -1118,10 +1270,18 @@
 
   // ── Boot ──────────────────────────────────────────────────────────────────
 
-  const saved = localStorage.getItem('pm_session');
-  if (saved) {
+  const savedBoard   = localStorage.getItem('pm_board');
+  const savedSession = localStorage.getItem('pm_session');
+
+  if (savedBoard && savedSession) {
     try {
-      session = JSON.parse(saved);
+      const board = BOARDS[savedBoard];
+      if (board) {
+        BOARD_ID = board.id;
+        document.getElementById('title').textContent = board.label;
+      }
+      session = JSON.parse(savedSession);
+      boardPickerScreen.classList.add('hidden');
       loginScreen.classList.add('hidden');
       sessionLabel.textContent = session.name;
       sessionBar.classList.remove('hidden');
@@ -1129,7 +1289,10 @@
       if (!isGuest()) addBtn.classList.remove('hidden');
       overlay.classList.remove('hidden');
       loadNotes();
-    } catch { localStorage.removeItem('pm_session'); }
+    } catch {
+      localStorage.removeItem('pm_session');
+      localStorage.removeItem('pm_board');
+    }
   }
 </script>
 </body>

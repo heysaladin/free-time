@@ -3,23 +3,23 @@ import StickyNote from './StickyNote';
 
 const QUADRANTS = [
   {
-    id: 'Q2', label: 'Plan', desc: 'High Priority · Low Urgency',
-    bg: '#f0fdf4', labelColor: '#16a34a', top: 0, left: 0,
+    id: 'Q1', label: 'Do', desc: 'Important · Urgent',
+    bg: '#fff1f2', labelColor: '#e11d48', top: 0, left: 0,
     corner: 'top-left',
   },
   {
-    id: 'Q1', label: 'Do First', desc: 'High Priority · High Urgency',
-    bg: '#fff1f2', labelColor: '#e11d48', top: 0, left: '50%',
+    id: 'Q2', label: 'Schedule', desc: 'Important · Not Urgent',
+    bg: '#f0fdf4', labelColor: '#16a34a', top: 0, left: '50%',
     corner: 'top-right',
   },
   {
-    id: 'Q4', label: 'Eliminate', desc: 'Low Priority · Low Urgency',
-    bg: '#f8fafc', labelColor: '#64748b', top: '50%', left: 0,
+    id: 'Q3', label: 'Delegate', desc: 'Not Important · Urgent',
+    bg: '#fefce8', labelColor: '#ca8a04', top: '50%', left: 0,
     corner: 'bottom-left',
   },
   {
-    id: 'Q3', label: 'Delegate', desc: 'Low Priority · High Urgency',
-    bg: '#fefce8', labelColor: '#ca8a04', top: '50%', left: '50%',
+    id: 'Q4', label: 'Eliminate', desc: 'Not Important · Not Urgent',
+    bg: '#f8fafc', labelColor: '#64748b', top: '50%', left: '50%',
     corner: 'bottom-right',
   },
 ];
@@ -31,7 +31,7 @@ const CORNER_ALIGN = {
   'bottom-right': { alignItems: 'flex-end', justifyContent: 'flex-end' },
 };
 
-export default function Canvas({ notes, onAdd, onUpdate, onDelete }) {
+export default function Canvas({ notes, onAdd, onUpdate, onDelete, currentUser, boardLabel }) {
   const canvasRef = useRef(null);
 
   const handleAddNote = () => {
@@ -121,7 +121,7 @@ export default function Canvas({ notes, onAdd, onUpdate, onDelete }) {
         pointerEvents: 'none',
         zIndex: 2,
       }}>
-        ← Low · Urgency · High →
+        ← Urgent · Not Urgent →
       </div>
 
       {/* Y-axis label */}
@@ -139,7 +139,7 @@ export default function Canvas({ notes, onAdd, onUpdate, onDelete }) {
         zIndex: 2,
         whiteSpace: 'nowrap',
       }}>
-        ↓ Low · Priority · High ↑
+        ↑ Important · Not Important ↓
       </div>
 
       {/* Title */}
@@ -160,8 +160,28 @@ export default function Canvas({ notes, onAdd, onUpdate, onDelete }) {
         padding: '4px 10px',
         borderRadius: 4,
       }}>
-        Priority Matrix
+        {boardLabel || 'Priority Matrix'}
       </div>
+
+      {/* User indicator */}
+      {currentUser && (
+        <div style={{
+          position: 'absolute',
+          top: 14,
+          right: 14,
+          fontSize: 11,
+          fontWeight: 600,
+          color: '#64748b',
+          letterSpacing: 1,
+          zIndex: 2,
+          pointerEvents: 'none',
+          background: 'rgba(248,250,252,0.9)',
+          padding: '4px 10px',
+          borderRadius: 4,
+        }}>
+          {currentUser}
+        </div>
+      )}
 
       {/* Notes */}
       {notes.map(note => (
